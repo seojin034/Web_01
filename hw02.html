@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 2학기 시간표</title>
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+<style>
+    .tl{
+        font-family: "GUGi", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+table { border-collapse: collapse; text-align: center; width: 700px;
+        table-layout: fixed;
+        }
+th, td {
+    border: 1px solid black; height: 50px;
+} /* 시간 열 */
+th:first-child { width: 70px; } /* 월~금 열의 너비를 동일하게 */
+th:not(:first-child), td { width: 126px; }
+th { background-color: #f2f2f2; }
+/* 과목별 색상 */
+.thermodynamics { background-color: #FFD6D6; }
+.chapel { background-color: #FFF2CC; }
+.organization { background-color: #D9EAD3; }
+.history { background-color: #D9EAF7; }
+.web { background-color: #EADCF8; }
+.economics { background-color: #FCE5CD; }
+.ai { background-color: #D0E0E3; }
+.career { background-color: #F4CCCC; }
+.community { background-color: #D9D2E9; }
+</style>
+<body>
+    <h1 class="tl">2026년 2학기 시간표</h1>
+<div class="container"></div>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>시간</th>
+                <th>월</th>
+                <th>화</th>
+                <th>수</th>
+                <th>목</th>
+                <th>금</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- 9시 -->
+            <tr>
+                <th>9</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td rowspan="3" class="thermodynamics">
+                    열역학
+            </td>
+                <td></td>
+            </tr>
+
+            <!-- 10시 -->
+            <tr>
+                <th>10</th>
+                <td></td>
+                <td></td>
+                <td class="chapel">채플</td>
+                <td rowspan="2" class="organization">조직행동론</td>
+            </tr>
+
+            <!-- 11시 -->
+            <tr>
+                <th>11</th>
+                <td></td>
+                <td></td>
+                <td rowspan="2" class="history">역사와문화</td>
+            </tr>
+
+            <!-- 12시 -->
+            <tr>
+                <th>12</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <!-- 13시 -->
+            <tr>
+                <th>13</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <!-- 14시 -->
+            <tr>
+                <th>14</th>
+                <td></td>
+                <td rowspan="3" class="web">웹프로그래밍</td>
+                <td rowspan="3" class="economics">경제학원론</td>
+                <td rowspan="3" class="ai">AI반도체공정</td>
+                <td></td>
+            </tr>
+
+            <!-- 15시 -->
+            <tr>
+                <th>15</th>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <!-- 16시 -->
+            <tr>
+                <th>16</th>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <!-- 17시 -->
+            <tr>
+                <th>17</th>
+                <td></td>
+                <td class="career">인생설계와 진로 II</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="6" class="community">지역사회공헌</td>
+            </tr>
+        </tfoot>
+    </table>
+    <img src="https://dh.aks.ac.kr/Edu/wiki/images/c/ce/Spider_Man.png" alt="스파이더맨" class="spiderman">
+</div>
+</body>
+</html>
