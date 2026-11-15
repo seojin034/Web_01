@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계산기</title>
+
+<style>
+    h1 {text-align: center;}
+
+    .disp {
+        width: 205px;
+        height: 40px;
+        margin-top: 3px;
+        text-align: right;
+        font-family: "Oxanium", sans-serif;
+        font-size: 22pt;
+    }
+
+    input[type=button] {
+        width: 50px;
+        height: 50px;
+        margin-top: 5px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #calc {
+        width: 220px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #history {
+        width: 220px;
+        margin: 25px auto;
+    }
+
+    #history h3 {
+        text-align: center;
+    }
+
+    .history-item {
+        width: 100%;
+        padding: 8px;
+        margin: 3px 0;
+        cursor: pointer;
+        text-align: right;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    let justCalculated = false;
+    let historyList = [];
+
+    // 숫자 버튼
+    $(".num").click(function(){
+        let cur = $("#disp2").val();
+        let n = $(this).val();
+
+        if(justCalculated){
+            cur = "";
+            justCalculated = false;
+        }
+
+        $("#disp2").val(cur+n);
+    });
+
+    // 연산자 버튼
+    $(".op").click(function(){
+        let cur = $("#disp2").val();
+        let n = $(this).val();
+
+        if(n == "="){
+
+            if(cur == "" || /[+\-*/]$/.test(cur)) return;
+
+            try{
+                let result = calculate(cur);
+
+                $("#disp1").val(cur);
+                $("#disp2").val(result);
+
+                // 계산 기록 저장
+                addHistory(cur, result);
+
+                justCalculated = true;
+
+            }catch(e){
+                $("#disp2").val("Error");
+                justCalculated = true;
+            }
+
+        }else{
+
+            if(cur == "" || cur == "Error") return;
+
+            // 연산자가 연속으로 입력되면 교체
+            if(/[+\-*/]$/.test(cur)){
+                cur = cur.slice(0,-1);
+            }
+
+            $("#disp2").val(cur+n);
+            justCalculated = false;
+        }
+    });
+
+    // 수식 계산 함수 (eval 사용하지 않음)
+    function calculate(expression){
+
+        let tokens = expression.match(/\d+(?:\.\d+)?|[+\-*/]/g);
+
+        if(!tokens || tokens.join("") !== expression){
+            throw new Error("잘못된 수식");
+        }
+
+        if(tokens.length % 2 == 0){
+            throw new Error("잘못된 수식");
+        }
+
+        for(let i=0; i<tokens.length; i++){
+            if(i % 2 == 0){
+                if(isNaN(Number(tokens[i]))) throw new Error();
+            }else{
+                if(!["+", "-", "*", "/"].includes(tokens[i])){
+                    throw new Error();
+                }
+            }
+        }
+
+        tokens = tokens.map((v,i) =>
+            i % 2 == 0 ? Number(v) : v
+        );
+
+        // 곱셈과 나눗셈 먼저 계산
+        for(let i=1; i<tokens.length; i+=2){
+
+            if(tokens[i] == "*" || tokens[i] == "/"){
+
+                let result;
+
+                if(tokens[i] == "*"){
+                    result = tokens[i-1] * tokens[i+1];
+                }else{
+                    if(tokens[i+1] == 0) throw new Error();
+                    result = tokens[i-1] / tokens[i+1];
+                }
+
+                tokens.splice(i-1,3,result);
+                i -= 2;
+            }
+        }
+
+        // 덧셈과 뺄셈 계산
+        let result = tokens[0];
+
+        for(let i=1; i<tokens.length; i+=2){
+
+            if(tokens[i] == "+"){
+                result += tokens[i+1];
+            }else if(tokens[i] == "-"){
+                result -= tokens[i+1];
+            }
+        }
+
+        if(!Number.isFinite(result)) throw new Error();
+
+        return Number(result.toFixed(10));
+    }
+
+    // 계산 기록 추가
+    function addHistory(expression, result){
+
+        historyList.unshift({
+            expression: expression,
+            result: result
+        });
+
+        // 최신 10개만 유지
+        if(historyList.length > 10){
+            historyList.pop();
+        }
+
+        showHistory();
+    }
+
+    // 계산 기록 화면에 출력
+    function showHistory(){
+
+        $("#historyList").empty();
+
+        historyList.forEach(function(item, index){
+
+            let button = $("<button>")
+                .addClass("history-item")
+                .text(item.expression + " = " + item.result)
+                .data("index", index);
+
+            $("#historyList").append(button);
+        });
+    }
+
+    // 계산 기록 클릭 시 결과 불러오기
+    $("#historyList").on("click", ".history-item", function(){
+
+        let index = $(this).data("index");
+        let item = historyList[index];
+
+        $("#disp1").val(item.expression + " = " + item.result);
+        $("#disp2").val(item.result);
+
+        justCalculated = true;
+    });
+
+    // AC 버튼: 전체 초기화
+    $(".func").click(function(){
+
+        $("#disp1").val("");
+        $("#disp2").val("");
+
+        justCalculated = false;
+    });
+
+    // 백스페이스 버튼
+    $(".backspace").click(function(){
+
+        let cur = $("#disp2").val();
+
+        if(cur == "Error"){
+            $("#disp2").val("");
+        }else{
+            $("#disp2").val(cur.slice(0,-1));
+        }
+
+        justCalculated = false;
+    });
+
+});
+</script>
+</head>
+
+<body>
+
+<h1>계산기</h1>
+
+<div id="calc">
+
+    <div>
+        <input type="text" class="disp" id="disp1" readonly>
+        <input type="text" class="disp" id="disp2" readonly>
+    </div>
+
+    <input type="button" class="num" value="7">
+    <input type="button" class="num" value="8">
+    <input type="button" class="num" value="9">
+    <input type="button" class="op" value="+"><br>
+
+    <input type="button" class="num" value="4">
+    <input type="button" class="num" value="5">
+    <input type="button" class="num" value="6">
+    <input type="button" class="op" value="-"><br>
+
+    <input type="button" class="num" value="1">
+    <input type="button" class="num" value="2">
+    <input type="button" class="num" value="3">
+    <input type="button" class="op" value="*"><br>
+
+    <input type="button" class="func" value="AC">
+    <input type="button" class="num" value="0">
+    <input type="button" class="op" value="=">
+    <input type="button" class="op" value="/"><br>
+
+    <input type="button" class="backspace" value="⌫">
+
+</div>
+
+<!-- 계산 기록 -->
+<div id="history">
+
+    <h3>계산 기록</h3>
+
+    <div id="historyList"></div>
+
+</div>
+
+</body>
+</html>
