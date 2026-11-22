@@ -11,13 +11,25 @@ const server = http.createServer((req,res) => {
     //console.log(req);
     console.log(req.method);
     // 응답 헤더
-    //res.setHeader("content-Type", "text/plain")
+    //res.setHeader("Content-Type", "text/plain");
     // 바디 전송
     //res.write("Hello Node");
     //res.end(); // 응답 종료
-    res.setHeader("content-Type", "text/html");
-    const readStream = fs.createReadStream(__dirname+"/index.html", "utf8");
-    readStream.pipe(res);
+    //res.setHeader("content-Type", "text/html");
+    //const readStream = fs.createReadStream(__dirname+"/index.html", "utf8");
+    //readStream.pipe(res);
+    const { method, url } = req;
+    res.setHeader("Content-Type", "text/plain");
+    if( method === "GET" && url === "/home" ) {
+        res.statusCode = 200;
+        res.end("HOME")
+    } else if( method === "GET" && url === "/about" ) {
+        res.statusCode = 200;
+        res.end("ABOUT")
+    } else {
+        res.statusCode = 404;
+        res.end("NO T FOUND");
+    }
 });
 // 서버 실행
 server.listen(PORT, ()=>{
